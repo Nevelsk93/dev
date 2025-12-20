@@ -1,0 +1,12 @@
+# Gradle
+.gradle/
+build/
+android-app/app/build/
+
+# Java
+*.class
+
+# Android studio
+.idea/
+/.gradle/
+local.properties
