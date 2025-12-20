@@ -21,10 +21,10 @@ jobs:
           api-level: 33
           components: build-tools;33.0.2,platforms;android-33,platform-tools
           ndk: false
-      - name: Run Gradle (no wrapper required)
+      - name: Run Gradle (build android-app)
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: assembleDebug
+          arguments: -p android-app assembleDebug
           gradle-version: '8.4'
       - name: Cache Gradle
         uses: actions/cache@v4
