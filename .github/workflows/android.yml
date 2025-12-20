@@ -39,3 +39,33 @@ jobs:
         with:
           name: app-apk
           path: '**/app/build/outputs/**/*.apk'
+      - name: Create GitHub release and attach APK(s)
+        uses: ncipollo/release-action@v1
+        with:
+          tag: apk-${{ github.run_number }}
+          files: '**/app/build/outputs/**/*.apk'
+      - name: Send APK to Telegram (optional)
+        if: ${{ secrets.TELEGRAM_BOT_TOKEN && secrets.TELEGRAM_CHAT_ID }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          apk="$(ls **/app/build/outputs/**/*.apk 2>/dev/null | head -n1)"
+          if [ -z "$apk" ]; then
+            echo "No APK found to send to Telegram"
+            exit 0
+          fi
+          echo "Sending $apk to Telegram..."
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument" -F chat_id=${TELEGRAM_CHAT_ID} -F document=@${apk}
+      - name: Send APK to Discord (optional)
+        if: ${{ secrets.DISCORD_WEBHOOK }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          apk="$(ls **/app/build/outputs/**/*.apk 2>/dev/null | head -n1)"
+          if [ -z "$apk" ]; then
+            echo "No APK found to send to Discord"
+            exit 0
+          fi
+          echo "Sending $apk to Discord..."
+          curl -s -F "file=@${apk}" -F "payload_json={\"content\":\"New APK built by CI\"}" ${DISCORD_WEBHOOK}
