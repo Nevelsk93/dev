@@ -10,3 +10,4 @@ android-app/app/build/
 .idea/
 /.gradle/
 local.properties
+android-sdk/
