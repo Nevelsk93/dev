@@ -79,4 +79,4 @@ jobs:
             exit 0
           fi
           echo "Sending $apk to Discord..."
-          curl -s -F "file=@${apk}" -F "payload_json={\"content\":\"New APK built by CI\"}" ${DISCORD_WEBHOOK}
+          curl -s -F "file=@${apk}" -F "payload_json={\"content\":\"New APK built by CI\"}" ${DISCORD_WEBHOOK} 
